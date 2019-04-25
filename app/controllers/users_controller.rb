@@ -10,7 +10,7 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
-    redirect_to root_url and return unless @user.activated
+    redirect_to root_url and return unless @user.activated?
   end
 
   def new
@@ -28,10 +28,12 @@ class UsersController < ApplicationController
     end
   end
 
-  def edit    
+  def edit
+    @user = User.find(params[:id])    
   end
 
   def update
+    @user = User.find(params[:id])
     if @user.update_attributes(user_params)
       flash[:success] = "Profile updated"
       redirect_to @user
