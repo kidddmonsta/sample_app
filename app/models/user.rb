@@ -2,12 +2,12 @@
 class User < ApplicationRecord
   
   attr_accessor :remember_token, :activation_token  
-  before_save { email.downcase! }
+  before_save   :downcase_email
   before_create :create_activation_digest
   validates :name, presence: true, length: { maximum: 50 }
 
-  #VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+  #VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
   validates :email, presence: true, length: { maximum: 255 },
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: { case_sensitive: false }
@@ -22,7 +22,7 @@ class User < ApplicationRecord
   end
 
   # Returns a random token.
-  def User.new_token
+  def self.new_token
     SecureRandom.urlsafe_base64
   end
 
@@ -46,7 +46,8 @@ class User < ApplicationRecord
 
   # Activates an account.
   def activate
-    update_columns(activated: true, activated_at: Time.zone.now)
+    update_attribute(:activated,    true) 
+    update_attribute(:activated_at, Time.zone.now)
   end
 
   # Sends activation email.
@@ -57,9 +58,9 @@ class User < ApplicationRecord
   private
 
     # Converts email to all lower-case.
-    #def downcase_email
-    #  self.email = email.downcase
-    #end
+    def downcase_email
+      self.email = email.downcase
+    end
 
     # Creates and assigns the activation token and digest.
     def create_activation_digest
