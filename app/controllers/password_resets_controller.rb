@@ -34,10 +34,6 @@ class PasswordResetsController < ApplicationController
     else
       render 'edit'                                     # Case (2)
     end
-<<<<<<< HEAD
-=======
-    
->>>>>>> password-reset
   end
 
   private
